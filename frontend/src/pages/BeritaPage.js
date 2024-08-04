@@ -38,7 +38,7 @@ const BeritaPage = () => {
         </div>
       </div>
       <Link to="/berita" className="block mt-8 text-blue-500 hover:text-blue-700">
-        Back to Kumpulan Berita
+        Kembali
       </Link>
     </div>
   );

@@ -137,13 +137,13 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
               onClick={() => data.onEdit(data)}
               className="bg-blue-500 text-white px-2 py-1 rounded mr-2 text-xs hover:bg-blue-700 hover:text-white transition duration-300 ease-in-out"
             >
-              Edit
+              Ubah
             </button>
             <button
               onClick={() => data.onDelete(data._id)}
               className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-700 hover:text-white transition duration-300 ease-in-out"
             >
-              Delete
+              Hapus
             </button>
           </div>
           <input
@@ -308,7 +308,7 @@ const AdminTaromboPage = () => {
   }, [setEdges]);
 
   const handleDelete = useCallback(async (id) => {
-    const confirmDelete = window.confirm(`Are you sure you want to delete?`);
+    const confirmDelete = window.confirm(`Apakah yakin ingin menghapus?`);
     if (confirmDelete) {
       try {
         const token = localStorage.getItem('token');
@@ -540,7 +540,7 @@ const AdminTaromboPage = () => {
       setFormData({ name: '', photo: null, birthDate: '', bio: '', isEmptyNode: false, isTextNode: false, textContent: '' });
       setIsEditModalOpen(false);
 
-      alert(selectedMember ? 'Family member updated successfully!' : 'New family member added successfully!');
+      alert(selectedMember ? 'Berhasil memperbarui' : 'Berhasil ditambahkan');
 
     } catch (error) {
       console.error('Error in handleSubmit:', error);
@@ -693,7 +693,7 @@ const AdminTaromboPage = () => {
               isSaving ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'
             }`}
           >
-            {isSaving ? 'Saving...' : 'Save Diagram'}
+            {isSaving ? 'Menyimpan...' : 'Simpan'}
           </button>
           <button
             onClick={handleFamilyDataClick}
@@ -711,7 +711,7 @@ const AdminTaromboPage = () => {
             onClick={handleLogout}
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 hover:text-white transition duration-300 ease-in-out"
           >
-            Logout
+            Keluar
           </button>
         </div>
       </header>
@@ -720,7 +720,7 @@ const AdminTaromboPage = () => {
           onClick={handleAddClick}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 hover:text-white transition duration-300 ease-in-out mr-4"
         >
-          Add Node
+          Tambah
         </button>
         <div style={{ height: '600px', width: '100%' }} ref={reactFlowWrapper}>
           <ReactFlow
@@ -754,7 +754,7 @@ const AdminTaromboPage = () => {
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">Add New Node</h2>
+            <h2 className="text-2xl font-bold mb-4">Tambah Anggota Keluarga</h2>
             <div className="mb-4">
               <label className="block mb-2">Type:</label>
               <select
@@ -762,9 +762,9 @@ const AdminTaromboPage = () => {
                 onChange={handleAddTypeChange}
                 className="w-full p-2 border rounded"
               >
-                <option value="family">Family Member</option>
-                <option value="empty">Empty Node</option>
-                <option value="text">Text Node</option>
+                <option value="family">Anggota Keluarga</option>
+                <option value="empty">Node Kosong</option>
+                <option value="text">Node Tulisan</option>
               </select>
             </div>
             <div className="flex justify-end">
@@ -772,13 +772,13 @@ const AdminTaromboPage = () => {
                 onClick={() => setIsAddModalOpen(false)}
                 className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
               >
-                Cancel
+                Batal
               </button>
               <button
                 onClick={handleAddConfirm}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
-                Confirm
+                Konfirmasi
               </button>
             </div>
           </div>
@@ -798,7 +798,7 @@ const AdminTaromboPage = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="Name"
+                    placeholder="Nama"
                     className="w-full mb-2 p-2 border rounded"
                   />
                   <input
@@ -819,7 +819,7 @@ const AdminTaromboPage = () => {
                     name="bio"
                     value={formData.bio}
                     onChange={handleInputChange}
-                    placeholder="Bio"
+                    placeholder="Keterangan"
                     className="w-full mb-2 p-2 border rounded"
                   />
                 </>

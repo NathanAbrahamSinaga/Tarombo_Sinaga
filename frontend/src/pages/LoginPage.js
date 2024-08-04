@@ -20,7 +20,7 @@ const LoginPage = () => {
         localStorage.setItem('token', token);
         navigate('/admin-tarombo');
       } else {
-        alert('Invalid username or password');
+        alert('Username dan password salah');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -33,7 +33,7 @@ const LoginPage = () => {
       <div className="md:w-1/2 w-full flex flex-col justify-center items-center">
         <Logo size="large" className="w-64 mb-4" />
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full md:w-80">
-          <h2 className="text-2xl font-bold mb-4 text-center">Admin Login</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
           <input
             type="text"
             placeholder="Username"

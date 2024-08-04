@@ -69,7 +69,7 @@ const AdminBeritaPage = () => {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Title"
+            placeholder="Judul"
             className="w-full mb-4 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
@@ -92,7 +92,7 @@ const AdminBeritaPage = () => {
             />
           </div>
           <button type="submit" className="w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition duration-300">
-            Add News
+            Tambah Berita
           </button>
         </form>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -106,14 +106,14 @@ const AdminBeritaPage = () => {
                   onClick={() => handleDelete(item._id)}
                   className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
                 >
-                  Delete
+                  Hapus
                 </button>
               </div>
             </div>
           ))}
         </div>
         <Link to="/admin-tarombo" className="block mt-8 text-center text-blue-600 hover:text-blue-800">
-          Back to Admin Tarombo
+          Kembali
         </Link>
       </div>
     </div>
