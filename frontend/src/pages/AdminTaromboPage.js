@@ -16,25 +16,25 @@ import 'reactflow/dist/style.css';
 const FamilyDataPopup = ({ familyData, onClose, onMemberClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredFamilyData = familyData.filter(member => 
+  const filteredFamilyData = familyData.filter(member =>
     member.name.toLowerCase().includes(searchTerm.toLowerCase()) && !member.isEmptyNode && !member.isTextNode
   );
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">Family Data</h2>
+        <h2 className="text-2xl font-bold mb-4">Data Keluarga</h2>
         <input
           type="text"
-          placeholder="Search family members..."
+          placeholder="Cari anggota keluarga..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full p-2 mb-4 border rounded"
         />
         <ul>
           {filteredFamilyData.map(member => (
-            <li 
-              key={member._id} 
+            <li
+              key={member._id}
               className="mb-2 p-2 border rounded cursor-pointer hover:bg-gray-100"
               onClick={() => onMemberClick(member)}
             >
@@ -46,7 +46,7 @@ const FamilyDataPopup = ({ familyData, onClose, onMemberClick }) => {
           onClick={onClose}
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Close
+          Tutup
         </button>
       </div>
     </div>
@@ -157,7 +157,6 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
     </div>
   );
 };
-
 
 const CustomEdge = ({
   id,
@@ -371,6 +370,8 @@ const AdminTaromboPage = () => {
       }
   
       const data = await response.json();
+      const nonEmptyMembers = data.filter(member => !member.isEmptyNode && !member.isTextNode);
+      setFamilyData(nonEmptyMembers);
       const flowNodes = data.map((member) => ({
         id: member._id,
         type: 'familyNode',
@@ -380,7 +381,7 @@ const AdminTaromboPage = () => {
           onEdit: handleEdit, 
           onDelete: handleDelete,
           onColorChange: handleNodeColorChange,
-          color: member.color || '#ffffff'  // Pastikan warna dimuat
+          color: member.color || '#ffffff'
         },
       }));
       setNodes(flowNodes);
@@ -430,7 +431,7 @@ const AdminTaromboPage = () => {
           data: { 
             onDelete: handleDeleteEdge,
             onColorChange: handleEdgeColorChange,
-            color: edge.color || '#000000'  // Pastikan warna dimuat
+            color: edge.color || '#000000'
           }
         })));
       } else {
