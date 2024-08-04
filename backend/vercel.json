@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
       {
-        "src": "api/server.js",
+        "src": "TAROMBO/server.js",
         "use": "@vercel/node"
       }
     ],
     "routes": [
       {
-        "src": "/api/(.*)",
-        "dest": "/api/server.js"
+        "src": "/TAROMBO/(.*)",
+        "dest": "TAROMBO/server.js"
       }
     ]
   }
