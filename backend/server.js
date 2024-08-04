@@ -15,7 +15,7 @@ const app = express();
 // Middleware
 app.use(cors(
   {
-    origin: ["https://Tarombo_Sinaga.vercel.app"],
+    origin: ["https://Tarombo-Sinaga.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   }
