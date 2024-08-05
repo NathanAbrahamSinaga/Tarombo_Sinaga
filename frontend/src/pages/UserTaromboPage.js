@@ -192,12 +192,12 @@ const UserTaromboPage = () => {
     let x, y, zoom;
 
     if (isMobile) {
-      x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 100;
-      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 100;
+      x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 150;
+      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 150;
       zoom = 2.5; // mobile
     } else {
       x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 550;
-      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 200;
+      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 220;
       zoom = 1.85; // desktop
     }
 
