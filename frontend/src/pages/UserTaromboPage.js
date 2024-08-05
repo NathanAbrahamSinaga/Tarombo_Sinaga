@@ -223,8 +223,8 @@ const UserTaromboPage = () => {
         </div>
       </header>
       <main className="container mx-auto mt-8">
-        <h2 className="sm:text-lg lg:text-xl font-bold mb-4 text-[#8B0000] text-center">TAROMBO TOGA SINAGA - BONOR SUHUT NI HUTA</h2>
-        <h2 className="sm:text-sm lg:text-lg font-bold mb-4 text-[#8B0000] text-center">HUTA SOSOR LONTUNG, PARBABA DOLOK, SAMOSIR</h2>
+        <h2 className="text-lg lg:text-xl font-bold mb-4 text-[#8B0000] text-center">TAROMBO TOGA SINAGA - BONOR SUHUT NI HUTA</h2>
+        <h2 className="text-sm lg:text-lg font-bold mb-4 text-[#8B0000] text-center">HUTA SOSOR LONTUNG, PARBABA DOLOK, SAMOSIR</h2>
         <div style={{ height: '600px', width: '100%' }} ref={reactFlowWrapper}>
           <ReactFlow
             nodes={memoizedNodes}
