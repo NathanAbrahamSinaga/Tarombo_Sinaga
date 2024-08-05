@@ -15,7 +15,7 @@ const AdminBeritaPage = () => {
   const fetchNews = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/api/family-news', {
+      const response = await axios.get('https://tarombo-sinaga-api.vercel.app/api/family-news', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNews(response.data);
@@ -33,7 +33,7 @@ const AdminBeritaPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:3000/api/family-news', formData, {
+      await axios.post('https://tarombo-sinaga-api.vercel.app/api/family-news', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -51,7 +51,7 @@ const AdminBeritaPage = () => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3000/api/family-news/${id}`, {
+      await axios.delete(`https://tarombo-sinaga-api.vercel.app/api/family-news/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchNews();

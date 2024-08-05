@@ -126,7 +126,7 @@ const UserTaromboPage = () => {
 
   const fetchFamilyMembers = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/family-members');
+      const response = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-members');
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -151,7 +151,7 @@ const UserTaromboPage = () => {
 
   const fetchDiagramState = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/family-diagram');
+      const response = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram');
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Failed to fetch diagram state: ${errorData.message || response.statusText}`);

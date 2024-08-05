@@ -274,7 +274,7 @@ const AdminTaromboPage = () => {
         throw new Error('No authentication token found');
       }
 
-      const response = await fetch(`http://localhost:3000/api/family-members/${nodeId}/color`, {
+      const response = await fetch(`https://tarombo-sinaga-api.vercel.app/api/family-members/${nodeId}/color`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -314,7 +314,7 @@ const AdminTaromboPage = () => {
         if (!token) {
           throw new Error('No authentication token found');
         }
-        const response = await fetch(`http://localhost:3000/api/family-members/${id}`, {
+        const response = await fetch(`https://tarombo-sinaga-api.vercel.app/api/family-members/${id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -356,7 +356,7 @@ const AdminTaromboPage = () => {
         throw new Error('No authentication token found');
       }
   
-      const response = await fetch('http://localhost:3000/api/family-members', {
+      const response = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-members', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
   
@@ -420,7 +420,7 @@ const AdminTaromboPage = () => {
         return response.json();
       };
   
-      const diagramData = await fetch('http://localhost:3000/api/family-diagram', {
+      const diagramData = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram', {
         headers: { 'Authorization': `Bearer ${token}` },
       }).then(res => checkResponse(res, 'Failed to fetch diagram state'));
   
@@ -490,8 +490,8 @@ const AdminTaromboPage = () => {
       formDataToSend.append('position', JSON.stringify(position));
 
       const url = selectedMember
-        ? `http://localhost:3000/api/family-members/${selectedMember._id}`
-        : 'http://localhost:3000/api/family-members';
+        ? `https://tarombo-sinaga-api.vercel.app/api/family-members/${selectedMember._id}`
+        : 'https://tarombo-sinaga-api.vercel.app/api/family-members';
       const method = selectedMember ? 'PUT' : 'POST';
 
       console.log(`Submitting ${method} request to ${url}`);
@@ -592,7 +592,7 @@ const AdminTaromboPage = () => {
         position: node.position,
         color: node.data.color
       }));
-      await fetch('http://localhost:3000/api/family-members/update-positions', {
+      await fetch('https://tarombo-sinaga-api.vercel.app/api/family-members/update-positions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -609,7 +609,7 @@ const AdminTaromboPage = () => {
         targetHandle: edge.targetHandle,
         color: edge.data.color
       }));
-      const response = await fetch('http://localhost:3000/api/family-diagram/save-diagram', {
+      const response = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram/save-diagram', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

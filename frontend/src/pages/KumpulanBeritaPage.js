@@ -11,7 +11,7 @@ const KumpulanBeritaPage = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/family-news');
+      const response = await axios.get('https://tarombo-sinaga-api.vercel.app/api/family-news');
       setNews(response.data);
     } catch (error) {
       console.error('Error fetching news:', error);
