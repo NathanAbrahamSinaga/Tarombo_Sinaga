@@ -185,16 +185,26 @@ const UserTaromboPage = () => {
   }, [familyData, fetchFamilyMembers]);
 
   const handleFamilyMemberClick = useCallback((member) => {
-    const foundNode = nodes.find(node => node.id === member._id);
-    if (foundNode && reactFlowInstance) {
-      const x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 550;
-      const y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 200;
-      const zoom = 1.85;
+  const foundNode = nodes.find(node => node.id === member._id);
+  if (foundNode && reactFlowInstance) {
+    const isMobile = window.innerWidth <= 768;
 
-      reactFlowInstance.setCenter(x, y, { zoom, duration: 1000 });
-      setShowFamilyData(false);
+    let x, y, zoom;
+
+    if (isMobile) {
+      x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 100;
+      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 100;
+      zoom = 2.5; // mobile
+    } else {
+      x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 550;
+      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 200;
+      zoom = 1.85; // desktop
     }
-  }, [nodes, reactFlowInstance]);
+
+    reactFlowInstance.setCenter(x, y, { zoom, duration: 1000 });
+    setShowFamilyData(false);
+  }
+}, [nodes, reactFlowInstance]);
 
   const memoizedNodes = useMemo(() => nodes, [nodes]);
   const memoizedEdges = useMemo(() => edges, [edges]);
