@@ -1,24 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.js',
-  import.meta.url,
-).toString();
 
 const BeritaPage = () => {
   const [news, setNews] = useState(null);
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
     fetchNews();
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, [id]);
 
   const fetchNews = async () => {
@@ -30,8 +23,8 @@ const BeritaPage = () => {
     }
   };
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth <= 768);
   };
 
   if (!news) {
@@ -47,34 +40,27 @@ const BeritaPage = () => {
         <div className="p-6">
           <h1 className="text-3xl font-bold mb-4 text-gray-800">{news.title}</h1>
           <p className="text-gray-600 mb-6">{new Date(news.date).toLocaleDateString()}</p>
-          <div className="flex flex-col items-center">
-            <Document
-              file={news.pdfFile}
-              onLoadSuccess={onDocumentLoadSuccess}
-              className="max-w-full"
-            >
-              <Page pageNumber={pageNumber} width={Math.min(600, window.innerWidth - 32)} />
-            </Document>
-            <p className="mt-4">
-              Page {pageNumber} of {numPages}
-            </p>
-            <div className="mt-4">
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                onClick={() => setPageNumber(prev => Math.max(prev - 1, 1))}
-                disabled={pageNumber <= 1}
-              >
-                Previous
-              </button>
-              <button
+          {isMobile ? (
+            <div className="flex justify-center">
+              <a
+                href={news.pdfFile}
+                download
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setPageNumber(prev => Math.min(prev + 1, numPages))}
-                disabled={pageNumber >= numPages}
               >
-                Next
-              </button>
+                Download PDF
+              </a>
             </div>
-          </div>
+          ) : (
+            <div className="flex justify-center">
+              <iframe
+                src={`${news.pdfFile}#toolbar=0`}
+                width="100%"
+                height="600px"
+                style={{ border: 'none' }}
+                title={news.title}
+              />
+            </div>
+          )}
         </div>
       </div>
       <Link to="/berita" className="block mt-8 text-blue-500 hover:text-blue-700">
