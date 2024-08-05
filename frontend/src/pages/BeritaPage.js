@@ -54,8 +54,8 @@ const BeritaPage = () => {
             <div className="flex justify-center">
               <iframe
                 src={`${news.pdfFile}#toolbar=0`}
-                width="100%"
-                height="2000px"
+                width="50%"
+                height="1500px"
                 style={{ border: 'none' }}
                 title={news.title}
               />
