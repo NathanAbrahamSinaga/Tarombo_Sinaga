@@ -266,6 +266,7 @@ const AdminTaromboPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [addType, setAddType] = useState('family');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleNodeColorChange = useCallback(async (nodeId, newColor) => {
     try {
@@ -284,7 +285,8 @@ const AdminTaromboPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to update node color: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(`Failed to update node color: ${errorData.message || response.statusText}`);
       }
 
       setNodes((nds) =>
@@ -326,7 +328,8 @@ const AdminTaromboPage = () => {
         } else if (response.status === 403) {
           throw new Error('You do not have permission to delete this node');
         } else {
-          throw new Error('Failed to delete node');
+          const errorData = await response.json();
+          throw new Error(`Failed to delete node: ${errorData.message || response.statusText}`);
         }
       } catch (error) {
         console.error('Error deleting node:', error);
@@ -340,7 +343,7 @@ const AdminTaromboPage = () => {
     setFormData({
       name: data.name,
       photo: null,
-      birthDate: data.birthDate,
+      birthDate: data.birthDate ? new Date(data.birthDate).toISOString().split('T')[0] : '',
       bio: data.bio,
       isEmptyNode: data.isEmptyNode,
       isTextNode: data.isTextNode,
@@ -350,6 +353,7 @@ const AdminTaromboPage = () => {
   }, []);
 
   const fetchFamilyMembers = useCallback(async () => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -386,7 +390,8 @@ const AdminTaromboPage = () => {
       }));
       setNodes(flowNodes);
       setIsDataLoaded(true);
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error fetching family members:', error);
       if (error.message.includes('No authentication token found')) {
         alert('Your session has expired. Please log in again.');
@@ -394,6 +399,8 @@ const AdminTaromboPage = () => {
       } else {
         alert('Failed to load family members: ' + error.message);
       }
+    } finally {
+      setIsLoading(false);
     }
   }, [handleEdit, handleDelete, handleNodeColorChange, setNodes, navigate]);
 
@@ -402,6 +409,7 @@ const AdminTaromboPage = () => {
   }, [setEdges]);
 
   const fetchDiagramState = useCallback(async () => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -442,11 +450,14 @@ const AdminTaromboPage = () => {
       console.error('Error fetching diagram state:', error);
       if (error.message.includes('Session expired')) {
         alert(error.message);
+        navigate('/login');
       } else {
         alert('Failed to load diagram state: ' + error.message);
       }
+    } finally {
+      setIsLoading(false);
     }
-  }, [setEdges, handleDeleteEdge, handleEdgeColorChange]);
+  }, [setEdges, handleDeleteEdge, handleEdgeColorChange, navigate]);
 
   useEffect(() => {
     fetchFamilyMembers();
@@ -456,18 +467,33 @@ const AdminTaromboPage = () => {
   const handleInputChange = (e) => {
     if (e.target.name === 'photo') {
       setFormData({ ...formData, photo: e.target.files[0] });
-    } else if (e.target.name === 'isEmptyNode') {
-      setFormData({ ...formData, isEmptyNode: e.target.checked });
-    } else if (e.target.name === 'isTextNode') {
-      setFormData({ ...formData, isTextNode: e.target.checked });
+    } else if (e.target.name === 'isEmptyNode' || e.target.name === 'isTextNode') {
+      setFormData({ ...formData, [e.target.name]: e.target.checked });
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
   };
 
+  const validateForm = () => {
+    if (!formData.isEmptyNode && !formData.isTextNode) {
+      if (!formData.name.trim()) {
+        throw new Error('Name is required');
+      }
+      if (formData.birthDate && isNaN(new Date(formData.birthDate).getTime())) {
+        throw new Error('Invalid birth date');
+      }
+    }
+    if (formData.isTextNode && !formData.textContent.trim()) {
+      throw new Error('Text content is required for text nodes');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
     try {
+      validateForm();
+
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found. Please log in again.');
@@ -509,7 +535,7 @@ const AdminTaromboPage = () => {
       }
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json();
         throw new Error(`Failed to save family member: ${errorData.message || response.statusText}`);
       }
 
@@ -551,6 +577,8 @@ const AdminTaromboPage = () => {
       } else {
         alert('Failed to save family member: ' + error.message);
       }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -619,7 +647,8 @@ const AdminTaromboPage = () => {
       });
   
       if (!response.ok) {
-        throw new Error(`Failed to save diagram: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(`Failed to save diagram: ${errorData.message || response.statusText}`);
       }
   
       alert('Diagram saved successfully!');
@@ -664,7 +693,8 @@ const AdminTaromboPage = () => {
       birthDate: '',
       bio: '',
       isEmptyNode: addType === 'empty',
-      isTextNode: addType === 'text'
+      isTextNode: addType === 'text',
+      textContent: ''
     });
     setIsEditModalOpen(true);
     setIsAddModalOpen(false);
@@ -681,6 +711,10 @@ const AdminTaromboPage = () => {
       },
     }));
   }, [nodes, handleEdit, handleDelete, handleNodeColorChange]);
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-[#FFF8E5]">
@@ -770,7 +804,8 @@ const AdminTaromboPage = () => {
             </div>
             <div className="flex justify-end">
               <button
-                onClick={() => setIsAddModalOpen(false)}
+                onClick={() => setIsAddModalOpen
+                  (false)}
                 className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
               >
                 Batal
@@ -845,8 +880,9 @@ const AdminTaromboPage = () => {
                 <button
                   type="submit"
                   className="bg-blue-500 text-white px-4 py-2 rounded"
+                  disabled={isSaving}
                 >
-                  Confirm
+                  {isSaving ? 'Saving...' : 'Confirm'}
                 </button>
               </div>
             </form>
