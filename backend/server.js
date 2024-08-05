@@ -30,4 +30,6 @@ app.use('/api/family-members', familyMemberRoutes);
 app.use('/api/family-news', familyNewsRoutes);
 app.use('/api/family-diagram', familyDiagramRoutes);
 
-module.exports = app;
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
