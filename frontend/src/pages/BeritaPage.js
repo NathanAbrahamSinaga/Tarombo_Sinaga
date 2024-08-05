@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
+import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-// Penting: Set worker untuk PDF.js
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.js',
+  import.meta.url,
+).toString();
 
 const BeritaPage = () => {
   const [news, setNews] = useState(null);
@@ -58,14 +61,14 @@ const BeritaPage = () => {
             <div className="mt-4">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                onClick={() => setPageNumber(pageNumber - 1)}
+                onClick={() => setPageNumber(prev => Math.max(prev - 1, 1))}
                 disabled={pageNumber <= 1}
               >
                 Previous
               </button>
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setPageNumber(pageNumber + 1)}
+                onClick={() => setPageNumber(prev => Math.min(prev + 1, numPages))}
                 disabled={pageNumber >= numPages}
               >
                 Next
