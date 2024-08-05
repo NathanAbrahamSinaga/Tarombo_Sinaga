@@ -8,12 +8,6 @@ const HomePage = () => {
       <Logo size="large" />
       <div className="mt-8 flex justify-center space-x-4">
         <Link
-          to="/login"
-          className="bg-white text-purple-900 px-4 py-2 rounded-md font-semibold hover:bg-blue-900 hover:text-white transition duration-300 ease-in-out"
-        >
-          Tarombo Admin
-        </Link>
-        <Link
           to="/tarombo"
           className="bg-white text-purple-900 px-4 py-2 rounded-md font-semibold hover:bg-blue-900 hover:text-white transition duration-300 ease-in-out"
         >
