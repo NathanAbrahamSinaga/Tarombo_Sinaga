@@ -55,7 +55,7 @@ const BeritaPage = () => {
               <iframe
                 src={`${news.pdfFile}#toolbar=0`}
                 width="100%"
-                height="200%"
+                height="2000px"
                 style={{ border: 'none' }}
                 title={news.title}
               />
