@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 // Middleware
 app.use(cors());
 app.use(cors({
-  origin: '*',
+  origin: 'tarombo-sinaga-api.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
