@@ -772,6 +772,8 @@ const AdminTaromboPage = () => {
             edgesFocusable={true}
             onInit={setReactFlowInstance}
             style={{ background: '#FFF8E5' }}
+            minZoom={0.1}
+            maxZoom={4}
           >
             <Controls />
             <MiniMap />

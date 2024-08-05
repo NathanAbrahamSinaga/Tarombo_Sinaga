@@ -230,6 +230,8 @@ const UserTaromboPage = () => {
             panOnScroll={false}
             panOnScrollMode="free"
             panOnDrag={true}
+            minZoom={0.1}
+            maxZoom={4}
           >
             <MiniMap />
             <Background variant="dots" gap={30} size={1} color="#4D3C0A" />
