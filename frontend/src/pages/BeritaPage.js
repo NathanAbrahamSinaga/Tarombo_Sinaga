@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { Worker } from '@react-pdf-viewer/core';
+import { Viewer } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const BeritaPage = () => {
   const [news, setNews] = useState(null);
@@ -33,7 +37,9 @@ const BeritaPage = () => {
           <h1 className="text-3xl font-bold mb-4 text-gray-800">{news.title}</h1>
           <p className="text-gray-600 mb-6">{new Date(news.date).toLocaleDateString()}</p>
           <div className="flex justify-center">
-            <embed src={news.pdfFile} type="application/pdf" width="1000" height="1300" />
+            <Worker workerUrl={`https://unpkg.com/pdfjs-dist@2.9.359/build/pdf.worker.min.js`}>
+              <Viewer fileUrl={news.pdfFile} />
+            </Worker>
           </div>
         </div>
       </div>
