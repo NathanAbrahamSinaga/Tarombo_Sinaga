@@ -751,8 +751,8 @@ const AdminTaromboPage = () => {
         </div>
       </header>
       <main className="container mx-auto mt-8">
-        <h2 className="text-2xl font-bold mb-4 text-[#8B0000] text-center">TAROMBO TOGA SINAGA SUHUT NI HUTA</h2>
-        <h2 className="text-2xl font-bold mb-4 text-[#8B0000] text-center">HUTA SOSOR LONTUNG, PARBABA DOLOK, SAMOSIR</h2>
+        <h2 className="text-xl font-bold mb-4 text-[#8B0000] text-center">TAROMBO TOGA SINAGA SUHUT NI HUTA</h2>
+        <h2 className="text-xl font-bold mb-4 text-[#8B0000] text-center">HUTA SOSOR LONTUNG, PARBABA DOLOK, SAMOSIR</h2>
         <button
           onClick={handleAddClick}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 hover:text-white transition duration-300 ease-in-out mr-4"
