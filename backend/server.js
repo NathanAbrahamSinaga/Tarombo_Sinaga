@@ -17,9 +17,8 @@ app.get('/', (req, res) => {
 });
 
 // Middleware
-app.use(cors());
 app.use(cors({
-  origin: '',
+  origin: 'https://tarombo-sinaga.vercel.app', // Replace with your allowed origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -29,7 +28,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
@@ -38,7 +37,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/family-members', familyMemberRoutes);
 app.use('/api/family-news', familyNewsRoutes);
 app.use('/api/family-diagram', familyDiagramRoutes);
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
