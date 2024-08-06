@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const BeritaPage = () => {
   const [news, setNews] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
   const { id } = useParams();
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-  useEffect(() => {
-    fetchNews();
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, [id]);
-
-  const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
     try {
       const response = await axios.get(`https://tarombo-sinaga-api.vercel.app/api/family-news/${id}`);
       setNews(response.data);
     } catch (error) {
       console.error('Error fetching news:', error);
     }
-  };
+  }, [id]);
 
-  const checkMobile = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
 
   if (!news) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -40,27 +37,13 @@ const BeritaPage = () => {
         <div className="p-6">
           <h1 className="text-3xl font-bold mb-4 text-gray-800">{news.title}</h1>
           <p className="text-gray-600 mb-6">{new Date(news.date).toLocaleDateString()}</p>
-          {isMobile ? (
-            <div className="flex justify-center">
-              <a
-                href={news.pdfFile}
-                download
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Download PDF
-              </a>
+          <div className="flex justify-center">
+            <div className="w-full">
+              <Worker workerUrl={`https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js`}>
+                <Viewer fileUrl={news.pdfFile} plugins={[defaultLayoutPluginInstance]} />
+              </Worker>
             </div>
-          ) : (
-            <div className="flex justify-center">
-              <iframe
-                src={`${news.pdfFile}#toolbar=0`}
-                width="50%"
-                height="1500px"
-                style={{ border: 'none' }}
-                title={news.title}
-              />
-            </div>
-          )}
+          </div>
         </div>
       </div>
       <Link to="/berita" className="block mt-8 text-blue-500 hover:text-blue-700">
