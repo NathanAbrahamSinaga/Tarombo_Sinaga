@@ -627,6 +627,7 @@ const AdminTaromboPage = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedNodes),
+        mode: 'no-cors'
       });
   
       const edgesData = edges.map(edge => ({
