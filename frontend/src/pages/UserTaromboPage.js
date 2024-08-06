@@ -51,8 +51,7 @@ const FamilyDataPopup = ({ familyData, onClose, onMemberClick }) => {
 };
 
 const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHeight = '20px' }) => {
-  const isEmptyNodeWidth = '30px';
-  const isEmptyNodeHeight = '30px';
+  const isEmptyNodeDimensions = { width: '30px', height: '30px' };
 
   const calculateTextNodeWidth = (text) => {
     const canvas = document.createElement('canvas');
@@ -61,42 +60,31 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
     return `${context.measureText(text).width + 20}px`;
   };
 
+  const nodeStyles = {
+    width: data.isEmptyNode ? isEmptyNodeDimensions.width : data.isTextNode ? calculateTextNodeWidth(data.textContent) : width,
+    height: data.isEmptyNode ? isEmptyNodeDimensions.height : data.isTextNode ? textNodeHeight : height,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: data.color || '#ffffff',
+  };
+
   return (
-    <div
-      className={`rounded shadow relative ${
-        data.isEmptyNode ? 'p-2' : 'p-4'
-      }`}
-      style={{
-        width: data.isEmptyNode ? isEmptyNodeWidth : data.isTextNode ? calculateTextNodeWidth(data.textContent) : width,
-        height: data.isEmptyNode ? isEmptyNodeHeight : data.isTextNode ? textNodeHeight : height,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: data.color || '#ffffff',
-      }}
-    >
-      <Handle type="target" position={Position.Top} id="t" style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Top} id="t" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Right} id="r" style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Right} id="r" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Bottom} id="b" style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Bottom} id="b" style={{ opacity: 0 }} />
-      <Handle type="target" position={Position.Left} id="l" style={{ opacity: 0 }} />
-      <Handle type="source" position={Position.Left} id="l" style={{ opacity: 0 }} />
-      {data.isEmptyNode ? (
-        <div></div>
-      ) : data.isTextNode ? (
+    <div className={`rounded shadow relative ${data.isEmptyNode ? 'p-2' : 'p-4'}`} style={nodeStyles}>
+      {['Top', 'Right', 'Bottom', 'Left'].map((pos) => (
+        <React.Fragment key={pos}>
+          <Handle type="target" position={Position[pos]} id={pos.toLowerCase()[0]} style={{ opacity: 0 }} />
+          <Handle type="source" position={Position[pos]} id={pos.toLowerCase()[0]} style={{ opacity: 0 }} />
+        </React.Fragment>
+      ))}
+      {data.isEmptyNode ? null : data.isTextNode ? (
         <div className="whitespace-nowrap text-center p-2 mb-1" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
           {data.textContent}
         </div>
       ) : (
         <>
-          <img
-            src={`data:image/webp;base64,${data.photo}`}
-            alt={data.name}
-            className="w-24 h-24 rounded-full object-cover mx-auto mb-2"
-          />
+          <img src={`data:image/webp;base64,${data.photo}`} alt={data.name} className="w-24 h-24 rounded-full object-cover mx-auto mb-2" />
           <h3 className="text-lg font-semibold text-center">{data.name}</h3>
           {data.birthDate && (
             <p className="text-sm text-center text-gray-600">
@@ -136,6 +124,7 @@ const UserTaromboPage = () => {
       const data = await response.json();
       const nonEmptyMembers = data.filter(member => !member.isEmptyNode && !member.isTextNode);
       setFamilyData(nonEmptyMembers);
+
       const flowNodes = data.map((member) => ({
         id: member._id,
         type: 'familyNode',
@@ -156,12 +145,13 @@ const UserTaromboPage = () => {
         const errorData = await response.json();
         throw new Error(`Failed to fetch diagram state: ${errorData.message || response.statusText}`);
       }
+
       const diagramData = await response.json();
       if (diagramData && Array.isArray(diagramData.edges)) {
         setEdges(diagramData.edges.map(edge => ({
           ...edge,
           type: 'smoothstep',
-          style: { stroke: edge.color || '#000000' } // Ensure the color is loaded
+          style: { stroke: edge.color || '#000000' },
         })));
       } else {
         console.warn('Unexpected diagram data structure:', diagramData);
@@ -185,26 +175,18 @@ const UserTaromboPage = () => {
   }, [familyData, fetchFamilyMembers]);
 
   const handleFamilyMemberClick = useCallback((member) => {
-  const foundNode = nodes.find(node => node.id === member._id);
-  if (foundNode && reactFlowInstance) {
-    const isMobile = window.innerWidth <= 768;
+    const foundNode = nodes.find(node => node.id === member._id);
+    if (foundNode && reactFlowInstance) {
+      const isMobile = window.innerWidth <= 768;
 
-    let x, y, zoom;
+      const x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - (isMobile ? 150 : 550);
+      const y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - (isMobile ? 150 : 220);
+      const zoom = isMobile ? 2.5 : 1.85;
 
-    if (isMobile) {
-      x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 150;
-      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 150;
-      zoom = 2.5; // mobile
-    } else {
-      x = foundNode.position.x + reactFlowWrapper.current.offsetWidth / 2 - 550;
-      y = foundNode.position.y + reactFlowWrapper.current.offsetHeight / 2 - 220;
-      zoom = 1.85; // desktop
+      reactFlowInstance.setCenter(x, y, { zoom, duration: 1000 });
+      setShowFamilyData(false);
     }
-
-    reactFlowInstance.setCenter(x, y, { zoom, duration: 1000 });
-    setShowFamilyData(false);
-  }
-}, [nodes, reactFlowInstance]);
+  }, [nodes, reactFlowInstance]);
 
   const memoizedNodes = useMemo(() => nodes, [nodes]);
   const memoizedEdges = useMemo(() => edges, [edges]);
@@ -213,18 +195,20 @@ const UserTaromboPage = () => {
     <div className="min-h-screen bg-[#FFF8E5]">
       <header className="bg-[#8F6E0B] text-white p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Tarombo</h1>
-        <div className="flex items-center">
-          <button
-            onClick={handleFamilyDataClick}
-            className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-700 mr-4 hover:text-white transition duration-300 ease-in-out"
-          >
-            Data Keluarga
-          </button>
-        </div>
+        <button
+          onClick={handleFamilyDataClick}
+          className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-700 mr-4 hover:text-white transition duration-300 ease-in-out"
+        >
+          Data Keluarga
+        </button>
       </header>
       <main className="container mx-auto mt-8">
-        <h2 className="text-base lg:text-xl font-bold mb-4 text-[#8B0000] text-center">TAROMBO TOGA SINAGA - BONOR SUHUT NI HUTA</h2>
-        <h2 className="text-sm lg:text-lg font-bold mb-4 text-[#8B0000] text-center">HUTA SOSOR LONTUNG, PARBABA DOLOK, SAMOSIR</h2>
+        <h2 className="text-base lg:text-xl font-bold mb-4 text-[#8B0000] text-center">
+          TAROMBO TOGA SINAGA - BONOR SUHUT NI HUTA
+        </h2>
+        <h2 className="text-sm lg:text-lg font-bold mb-4 text-[#8B0000] text-center">
+          HUTA SOSOR LONTUNG, PARBABA DOLOK, SAMOSIR
+        </h2>
         <div style={{ height: '600px', width: '100%' }} ref={reactFlowWrapper}>
           <ReactFlow
             nodes={memoizedNodes}
@@ -238,10 +222,10 @@ const UserTaromboPage = () => {
             nodesDraggable={false}
             nodesConnectable={false}
             elementsSelectable={false}
-            zoomOnScroll={true}
+            zoomOnScroll
             panOnScroll={false}
             panOnScrollMode="free"
-            panOnDrag={true}
+            panOnDrag
             minZoom={0.1}
             maxZoom={4}
           >

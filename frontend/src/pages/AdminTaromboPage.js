@@ -71,9 +71,7 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
 
   return (
     <div
-      className={`rounded shadow relative ${
-        data.isEmptyNode ? 'p-2' : 'p-4'
-      }`}
+      className={`rounded shadow relative ${data.isEmptyNode ? 'p-2' : 'p-4'}`}
       style={{
         width: data.isEmptyNode ? isEmptyNodeWidth : data.isTextNode ? calculateTextNodeWidth(data.textContent) : width,
         height: data.isEmptyNode ? isEmptyNodeHeight : data.isTextNode ? textNodeHeight : height,
@@ -465,27 +463,22 @@ const AdminTaromboPage = () => {
   }, [fetchFamilyMembers, fetchDiagramState]);
 
   const handleInputChange = (e) => {
-    if (e.target.name === 'photo') {
-      setFormData({ ...formData, photo: e.target.files[0] });
-    } else if (e.target.name === 'isEmptyNode' || e.target.name === 'isTextNode') {
-      setFormData({ ...formData, [e.target.name]: e.target.checked });
+    const { name, value, files, checked } = e.target;
+    if (name === 'photo') {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    } else if (name === 'isEmptyNode' || name === 'isTextNode') {
+      setFormData((prev) => ({ ...prev, [name]: checked }));
     } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const validateForm = () => {
     if (!formData.isEmptyNode && !formData.isTextNode) {
-      if (!formData.name.trim()) {
-        throw new Error('Name is required');
-      }
-      if (formData.birthDate && isNaN(new Date(formData.birthDate).getTime())) {
-        throw new Error('Invalid birth date');
-      }
+      if (!formData.name.trim()) throw new Error('Name is required');
+      if (formData.birthDate && isNaN(new Date(formData.birthDate).getTime())) throw new Error('Invalid birth date');
     }
-    if (formData.isTextNode && !formData.textContent.trim()) {
-      throw new Error('Text content is required for text nodes');
-    }
+    if (formData.isTextNode && !formData.textContent.trim()) throw new Error('Text content is required for text nodes');
   };
 
   const handleSubmit = async (e) => {
@@ -495,9 +488,7 @@ const AdminTaromboPage = () => {
       validateForm();
 
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found. Please log in again.');
-      }
+      if (!token) throw new Error('No authentication token found. Please log in again.');
 
       const formDataToSend = new FormData();
       for (const key in formData) {
@@ -508,9 +499,7 @@ const AdminTaromboPage = () => {
         }
       }
 
-      if (!reactFlowInstance) {
-        throw new Error('React Flow instance not initialized');
-      }
+      if (!reactFlowInstance) throw new Error('React Flow instance not initialized');
 
       const position = reactFlowInstance.project({ x: 0, y: 0 });
       formDataToSend.append('position', JSON.stringify(position));
@@ -520,19 +509,15 @@ const AdminTaromboPage = () => {
         : 'https://tarombo-sinaga-api.vercel.app/api/family-members';
       const method = selectedMember ? 'PUT' : 'POST';
 
-      console.log(`Submitting ${method} request to ${url}`);
-
       const response = await fetch(url, {
-        method: method,
+        method,
         headers: {
           Authorization: `Bearer ${token}`,
         },
         body: formDataToSend,
       });
 
-      if (response.status === 403) {
-        throw new Error('You do not have permission to perform this action');
-      }
+      if (response.status === 403) throw new Error('You do not have permission to perform this action');
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -540,17 +525,13 @@ const AdminTaromboPage = () => {
       }
 
       const updatedMember = await response.json();
-      console.log('Received updated member data:', updatedMember);
 
       setNodes((nds) => {
-        let newNodes;
         if (selectedMember) {
-          newNodes = nds.map((n) =>
-            n.id === updatedMember._id ? { ...n, data: updatedMember } : n
-          );
+          return nds.map((n) => (n.id === updatedMember._id ? { ...n, data: updatedMember } : n));
         } else {
           const newPosition = { x: nds.length * 250, y: 0 };
-          newNodes = [
+          return [
             ...nds,
             {
               id: updatedMember._id,
@@ -560,7 +541,6 @@ const AdminTaromboPage = () => {
             },
           ];
         }
-        return newNodes;
       });
 
       setSelectedMember(null);
@@ -611,9 +591,7 @@ const AdminTaromboPage = () => {
     setIsSaving(true);
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
+      if (!token) throw new Error('No authentication token found');
   
       const updatedNodes = nodes.map(node => ({
         id: node.id,
@@ -809,8 +787,7 @@ const AdminTaromboPage = () => {
             </div>
             <div className="flex justify-end">
               <button
-                onClick={() => setIsAddModalOpen
-                  (false)}
+                onClick={() => setIsAddModalOpen(false)}
                 className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
               >
                 Batal
