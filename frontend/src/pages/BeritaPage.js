@@ -5,6 +5,7 @@ import { Worker, Viewer } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 const BeritaPage = () => {
   const [news, setNews] = useState(null);
@@ -39,7 +40,7 @@ const BeritaPage = () => {
           <p className="text-gray-600 mb-6">{new Date(news.date).toLocaleDateString()}</p>
           <div className="flex justify-center">
             <div className="w-full">
-              <Worker workerUrl={`https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js`}>
+              <Worker workerUrl={pdfjsWorker}>
                 <Viewer fileUrl={news.pdfFile} plugins={[defaultLayoutPluginInstance]} />
               </Worker>
             </div>
