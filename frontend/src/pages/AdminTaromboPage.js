@@ -493,39 +493,35 @@ const AdminTaromboPage = () => {
     setIsSaving(true);
     try {
       validateForm();
-  
+
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found. Please log in again.');
       }
-  
+
       const formDataToSend = new FormData();
       for (const key in formData) {
         if (key === 'photo' && formData[key] instanceof File) {
           formDataToSend.append(key, formData[key]);
-        } else if (key!== 'photo') {
+        } else if (key !== 'photo') {
           formDataToSend.append(key, formData[key]);
         }
       }
-  
+
       if (!reactFlowInstance) {
         throw new Error('React Flow instance not initialized');
       }
-  
+
       const position = reactFlowInstance.project({ x: 0, y: 0 });
       formDataToSend.append('position', JSON.stringify(position));
-  
-      // Pastikan Anda mengirimkan position ke server
-      const positionData = { x: position.x, y: position.y };
-      formDataToSend.append('position', JSON.stringify(positionData));
-  
+
       const url = selectedMember
-       ? `https://tarombo-sinaga-api.vercel.app/api/family-members/${selectedMember._id}`
+        ? `https://tarombo-sinaga-api.vercel.app/api/family-members/${selectedMember._id}`
         : 'https://tarombo-sinaga-api.vercel.app/api/family-members';
-      const method = selectedMember? 'PUT' : 'POST';
-  
+      const method = selectedMember ? 'PUT' : 'POST';
+
       console.log(`Submitting ${method} request to ${url}`);
-  
+
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -533,53 +529,53 @@ const AdminTaromboPage = () => {
         },
         body: formDataToSend,
       });
-  
+
       if (response.status === 403) {
         throw new Error('You do not have permission to perform this action');
       }
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Failed to save family member: ${errorData.message || response.statusText}`);
       }
-  
+
       const updatedMember = await response.json();
       console.log('Received updated member data:', updatedMember);
-  
+
       setNodes((nds) => {
         let newNodes;
         if (selectedMember) {
           newNodes = nds.map((n) =>
-            n.id === updatedMember._id? {...n, data: updatedMember } : n
+            n.id === updatedMember._id ? { ...n, data: updatedMember } : n
           );
         } else {
           const newPosition = { x: nds.length * 250, y: 0 };
           newNodes = [
-           ...nds,
+            ...nds,
             {
               id: updatedMember._id,
               type: 'familyNode',
-              position: positionData, // Gunakan positionData di sini
-              data: {...updatedMember, onEdit: handleEdit, onDelete: handleDelete },
+              position: newPosition,
+              data: { ...updatedMember, onEdit: handleEdit, onDelete: handleDelete },
             },
           ];
         }
         return newNodes;
       });
-  
+
       setSelectedMember(null);
       setFormData({ name: '', photo: null, birthDate: '', bio: '', isEmptyNode: false, isTextNode: false, textContent: '' });
       setIsEditModalOpen(false);
-  
-      alert(selectedMember? 'Berhasil memperbarui' : 'Berhasil ditambahkan');
-  
+
+      alert(selectedMember ? 'Berhasil memperbarui' : 'Berhasil ditambahkan');
+
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       if (error.message.includes('No authentication token found')) {
         alert('Your session has expired. Please log in again.');
         navigate('/login');
       } else {
-        alert('Failed to save family member:'+ error.message);
+        alert('Failed to save family member: ' + error.message);
       }
     } finally {
       setIsSaving(false);

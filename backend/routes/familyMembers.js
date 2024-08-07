@@ -17,7 +17,7 @@ const convertToWebPAndBase64 = async (buffer) => {
 // Add family member, empty node, or text node
 router.post('/', authenticateToken, upload.single('photo'), async (req, res) => {
   try {
-    const { name, birthDate, bio, isEmptyNode, isTextNode, textContent, position } = req.body;
+    const { name, birthDate, bio, isEmptyNode, isTextNode, textContent } = req.body;
     let photo = null;
 
     if (req.file) {
@@ -27,12 +27,11 @@ router.post('/', authenticateToken, upload.single('photo'), async (req, res) => 
     const familyMember = new FamilyMember({
       name,
       photo,
-      birthDate: birthDate? new Date(birthDate) : null,
+      birthDate: birthDate ? new Date(birthDate) : null,
       bio,
       isEmptyNode: isEmptyNode === 'true' || isEmptyNode === true,
       isTextNode: isTextNode === 'true' || isTextNode === true,
-      textContent,
-      position: JSON.parse(position) // Pastikan Anda mem-parsing data position dengan benar
+      textContent
     });
 
     await familyMember.save();
