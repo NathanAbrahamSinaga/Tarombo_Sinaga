@@ -493,12 +493,12 @@ const AdminTaromboPage = () => {
     setIsSaving(true);
     try {
       validateForm();
-
+  
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found. Please log in again.');
       }
-
+  
       const formDataToSend = new FormData();
       for (const key in formData) {
         if (key === 'photo' && formData[key] instanceof File) {
@@ -507,21 +507,25 @@ const AdminTaromboPage = () => {
           formDataToSend.append(key, formData[key]);
         }
       }
-
+  
       if (!reactFlowInstance) {
         throw new Error('React Flow instance not initialized');
       }
-
-      const position = reactFlowInstance.project({ x: 0, y: 0 });
-      formDataToSend.append('position', JSON.stringify(position));
-
+  
+      // Calculate a new position for the node
+      const newPosition = { 
+        x: nodes.length * 250, 
+        y: 0 
+      };
+      formDataToSend.append('position', JSON.stringify(newPosition));
+  
       const url = selectedMember
         ? `https://tarombo-sinaga-api.vercel.app/api/family-members/${selectedMember._id}`
         : 'https://tarombo-sinaga-api.vercel.app/api/family-members';
       const method = selectedMember ? 'PUT' : 'POST';
-
+  
       console.log(`Submitting ${method} request to ${url}`);
-
+  
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -529,27 +533,26 @@ const AdminTaromboPage = () => {
         },
         body: formDataToSend,
       });
-
+  
       if (response.status === 403) {
         throw new Error('You do not have permission to perform this action');
       }
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Failed to save family member: ${errorData.message || response.statusText}`);
       }
-
+  
       const updatedMember = await response.json();
       console.log('Received updated member data:', updatedMember);
-
+  
       setNodes((nds) => {
         let newNodes;
         if (selectedMember) {
           newNodes = nds.map((n) =>
-            n.id === updatedMember._id ? { ...n, data: updatedMember } : n
+            n.id === updatedMember._id ? { ...n, data: updatedMember, position: updatedMember.position } : n
           );
         } else {
-          const newPosition = { x: nds.length * 250, y: 0 };
           newNodes = [
             ...nds,
             {
@@ -562,13 +565,13 @@ const AdminTaromboPage = () => {
         }
         return newNodes;
       });
-
+  
       setSelectedMember(null);
       setFormData({ name: '', photo: null, birthDate: '', bio: '', isEmptyNode: false, isTextNode: false, textContent: '' });
       setIsEditModalOpen(false);
-
+  
       alert(selectedMember ? 'Berhasil memperbarui' : 'Berhasil ditambahkan');
-
+  
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       if (error.message.includes('No authentication token found')) {
