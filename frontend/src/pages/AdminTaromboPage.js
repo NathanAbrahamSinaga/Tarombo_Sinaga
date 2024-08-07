@@ -123,13 +123,13 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
             alt={data.name}
             className="w-24 h-24 rounded-full object-cover mx-auto mb-2"
           />
-          <h3 className="text-lg font-semibold text-center">{data.name}</h3>
+          <h3 className="text-md font-semibold text-center">{data.name}</h3>
           {data.birthDate && (
             <p className="text-sm text-center text-gray-600">
               {new Date(data.birthDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           )}
-          <p className="text-lg text-center mt-2 overflow-hidden" style={{ maxHeight: '3em', textOverflow: 'ellipsis' }}>
+          <p className="text-md text-center mt-2 overflow-hidden" style={{ maxHeight: '3em', textOverflow: 'ellipsis' }}>
             {data.bio}
           </p>
           <div className="mt-2 flex justify-center">
