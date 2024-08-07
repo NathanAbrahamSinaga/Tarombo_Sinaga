@@ -101,7 +101,7 @@ router.post('/update-positions', authenticateToken, async (req, res) => {
   try {
     const updatedNodes = req.body;
     for (const node of updatedNodes) {
-      await FamilyMember.findByIdAndUpdate(node.id, {
+      await FamilyMember.findByIdAndUpdate(node.id, { 
         position: node.position,
         color: node.color  // Tambahkan ini
       });
