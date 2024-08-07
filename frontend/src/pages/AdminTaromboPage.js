@@ -129,7 +129,7 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
               {new Date(data.birthDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           )}
-          <p className="text-xs text-center mt-2 overflow-hidden" style={{ maxHeight: '3em', textOverflow: 'ellipsis' }}>
+          <p className="text-lg text-center mt-2 overflow-hidden" style={{ maxHeight: '3em', textOverflow: 'ellipsis' }}>
             {data.bio}
           </p>
           <div className="mt-2 flex justify-center">
