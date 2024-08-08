@@ -7,7 +7,7 @@ const authRoutes = require('./routes/auth');
 const familyMemberRoutes = require('./routes/familyMembers');
 const familyNewsRoutes = require('./routes/familyNews');
 const familyDiagramRoutes = require('./routes/familyDiagram');
-const bodyParser = require('body-parser');
+
 
 dotenv.config();
 const app = express();
@@ -16,8 +16,7 @@ app.get('/', (req, res) => {
   res.send('Tarombo API is running');
 });
 
-// Middleware
-app.use('/api/family-members/update-positions');
+
 
 app.use(cors({
   origin: 'https://tarombo-sinaga.vercel.app',
@@ -41,6 +40,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/family-members', familyMemberRoutes);
 app.use('/api/family-news', familyNewsRoutes);
 app.use('/api/family-diagram', familyDiagramRoutes);
+app.use('/api/family-members/update-positions');
 
 
 const PORT = process.env.PORT || 3000;
