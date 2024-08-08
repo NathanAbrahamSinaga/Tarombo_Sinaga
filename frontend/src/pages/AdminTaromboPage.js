@@ -513,9 +513,9 @@ const AdminTaromboPage = () => {
         throw new Error('React Flow instance not initialized');
       }
   
-      // Calculate a new position for the node
+      // Position every new node at the same coordinates (x = 0, y = 0)
       const newPosition = { 
-        x: nodes.length * 250, 
+        x: 0, 
         y: 0 
       };
       formDataToSend.append('position', JSON.stringify(newPosition));
@@ -585,6 +585,7 @@ const AdminTaromboPage = () => {
       setIsSaving(false);
     }
   };
+
 
   const handleFamilyDataClick = useCallback(() => {
     if (familyData.filter(member => !member.isEmptyNode && !member.isTextNode).length === 0) {
