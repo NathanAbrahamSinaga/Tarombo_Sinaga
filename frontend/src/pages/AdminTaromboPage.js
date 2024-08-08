@@ -282,7 +282,6 @@ const AdminTaromboPage = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ color: newColor }),
-        mode: 'cors'
       });
 
       if (!response.ok) {
@@ -322,7 +321,6 @@ const AdminTaromboPage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          mode: 'cors'
         });
         if (response.ok) {
           setNodes((nds) => nds.filter((n) => n.id !== id));
@@ -364,7 +362,6 @@ const AdminTaromboPage = () => {
   
       const response = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-members', {
         headers: { 'Authorization': `Bearer ${token}` },
-        mode: 'cors'
       });
   
       if (response.status === 403) {
@@ -433,7 +430,6 @@ const AdminTaromboPage = () => {
   
       const diagramData = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram', {
         headers: { 'Authorization': `Bearer ${token}` },
-        mode: 'cors'
       }).then(res => checkResponse(res, 'Failed to fetch diagram state'));
   
       if (diagramData && Array.isArray(diagramData.edges)) {
@@ -634,7 +630,6 @@ const AdminTaromboPage = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedNodes),
-        mode: 'cors'
       });
   
       const edgesData = edges.map(edge => ({
@@ -652,7 +647,6 @@ const AdminTaromboPage = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ edges: edgesData }),
-        mode: 'cors'
       });
   
       if (!response.ok) {
