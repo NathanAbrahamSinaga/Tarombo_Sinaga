@@ -630,6 +630,7 @@ const AdminTaromboPage = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedNodes),
+        mode: 'no-cors'
       });
   
       const edgesData = edges.map(edge => ({
@@ -647,6 +648,7 @@ const AdminTaromboPage = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ edges: edgesData }),
+        mode: 'no-cors'
       });
   
       if (!response.ok) {
