@@ -4,7 +4,7 @@ const User = require('./models/User');
 require('dotenv').config();
 
 const adminUsers = [
-  { username: 'elsinaga', password: 'elsinaga12345' },
+  { username: 'YOUCANTSEE', password: 'YOUCANTSEE' },
 ];
 
 mongoose.connect(process.env.MONGODB_URI)
