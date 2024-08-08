@@ -623,6 +623,8 @@ const AdminTaromboPage = () => {
         position: node.position,
         color: node.data.color
       }));
+  
+      // Menggunakan mode 'no-cors' untuk permintaan update posisi
       await fetch('https://tarombo-sinaga-api.vercel.app/api/family-members/update-positions', {
         method: 'POST',
         headers: {
@@ -630,6 +632,7 @@ const AdminTaromboPage = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedNodes),
+        mode: 'no-cors' // Menambahkan mode 'no-cors'
       });
   
       const edgesData = edges.map(edge => ({
@@ -640,19 +643,17 @@ const AdminTaromboPage = () => {
         targetHandle: edge.targetHandle,
         color: edge.data.color
       }));
-      const response = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram/save-diagram', {
+  
+      // Menggunakan mode 'no-cors' untuk permintaan simpan diagram
+      await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram/save-diagram', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ edges: edgesData }),
+        mode: 'no-cors' // Menambahkan mode 'no-cors'
       });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to save diagram: ${errorData.message || response.statusText}`);
-      }
   
       alert('Diagram saved successfully!');
     } catch (error) {
