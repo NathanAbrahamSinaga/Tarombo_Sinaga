@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 app.use('/api/family-members/update-positions', cors());
 
 app.use(cors({
-  origin: '*',
+  origin: 'https://tarombo-sinaga.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
