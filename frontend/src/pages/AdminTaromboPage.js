@@ -180,13 +180,6 @@ const CustomEdge = ({
     targetPosition,
   });
 
-  const onEdgeContextMenu = (evt) => {
-    evt.preventDefault();
-    if (data && typeof data.onDelete === 'function') {
-      data.onDelete(id);
-    }
-  };
-
   const handleColorChange = (e) => {
     const newColor = e.target.value;
     if (data && typeof data.onColorChange === 'function') {
@@ -201,7 +194,6 @@ const CustomEdge = ({
         style={{ ...style, stroke: data.color || '#000000' }}
         className="react-flow__edge-path"
         d={edgePath}
-        onContextMenu={onEdgeContextMenu}
       />
       {selected && (
         <foreignObject
@@ -235,6 +227,7 @@ const CustomEdge = ({
     </>
   );
 };
+
 
 const nodeTypes = {
   familyNode: React.memo(FamilyMemberNode),
