@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+// const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const authRoutes = require('./routes/auth');
@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 });
 
 // Middleware
-app.use('/api/family-members/update-positions', cors());
+app.use('/api/family-members/update-positions');
 
 // app.use(cors({
 //   origin: 'https://tarombo-sinaga.vercel.app',
