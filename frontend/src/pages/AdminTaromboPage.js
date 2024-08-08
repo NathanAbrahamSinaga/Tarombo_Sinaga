@@ -12,6 +12,7 @@ import ReactFlow, {
   getSmoothStepPath
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import { throttle } from 'lodash';
 
 const FamilyDataPopup = ({ familyData, onClose, onMemberClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -236,11 +237,11 @@ const CustomEdge = ({
 };
 
 const nodeTypes = {
-  familyNode: FamilyMemberNode,
+  familyNode: React.memo(FamilyMemberNode),
 };
 
 const edgeTypes = {
-  custom: CustomEdge,
+  custom: React.memo(CustomEdge),
 };
 
 const AdminTaromboPage = () => {
@@ -609,7 +610,7 @@ const AdminTaromboPage = () => {
     navigate('/');
   };
 
-  const saveDiagramState = async () => {
+  const saveDiagramState = useCallback(throttle(async () => {
     if (isSaving) return;
     setIsSaving(true);
     try {
@@ -661,7 +662,7 @@ const AdminTaromboPage = () => {
     } finally {
       setIsSaving(false);
     }
-  };
+  }, 2000), [nodes, edges, isSaving]); // Throttle the save function to limit it to once every 2 seconds
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => {
