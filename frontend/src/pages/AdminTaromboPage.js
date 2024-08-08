@@ -9,7 +9,8 @@ import ReactFlow, {
   addEdge,
   Handle,
   Position,
-  getSmoothStepPath
+  getSmoothStepPath,
+  applyNodeChanges
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -244,7 +245,7 @@ const edgeTypes = {
 };
 
 const AdminTaromboPage = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
@@ -488,6 +489,8 @@ const AdminTaromboPage = () => {
     }
   };
 
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -624,16 +627,28 @@ const AdminTaromboPage = () => {
         color: node.data.color
       }));
   
-      // Menggunakan mode 'no-cors' untuk permintaan update posisi
-      await fetch('https://tarombo-sinaga-api.vercel.app/api/family-members/update-positions', {
+      // Update node positions
+      const positionResponse = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-members/update-positions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedNodes),
-        mode: 'no-cors' // Menambahkan mode 'no-cors'
       });
+  
+      if (!positionResponse.ok) {
+        throw new Error(`Failed to update positions: ${positionResponse.statusText}`);
+      }
+  
+      const positionResult = await positionResponse.json();
+      console.log('Position update result:', positionResult);
+  
+      // Update local state with new positions
+      setNodes(prevNodes => prevNodes.map(node => {
+        const updatedNode = updatedNodes.find(un => un.id === node.id);
+        return updatedNode ? { ...node, position: updatedNode.position } : node;
+      }));
   
       const edgesData = edges.map(edge => ({
         id: edge.id,
@@ -644,16 +659,22 @@ const AdminTaromboPage = () => {
         color: edge.data.color
       }));
   
-      // Menggunakan mode 'no-cors' untuk permintaan simpan diagram
-      await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram/save-diagram', {
+      // Save edges
+      const edgesResponse = await fetch('https://tarombo-sinaga-api.vercel.app/api/family-diagram/save-diagram', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ edges: edgesData }),
-        mode: 'no-cors' // Menambahkan mode 'no-cors'
       });
+  
+      if (!edgesResponse.ok) {
+        throw new Error(`Failed to save edges: ${edgesResponse.statusText}`);
+      }
+  
+      const edgesResult = await edgesResponse.json();
+      console.log('Edges save result:', edgesResult);
   
       alert('Diagram saved successfully!');
     } catch (error) {
@@ -663,6 +684,14 @@ const AdminTaromboPage = () => {
       setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      saveDiagramState();
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [nodes, edges]);
+
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => {
@@ -680,6 +709,25 @@ const AdminTaromboPage = () => {
       return addEdge(newEdge, eds);
     });
   }, [setEdges, handleDeleteEdge, handleEdgeColorChange]);
+
+  const onNodesChange = useCallback((changes) => {
+    setNodes((nds) => {
+      const newNodes = applyNodeChanges(changes, nds);
+      // If the change includes a position change, update the node's position
+      changes.forEach((change) => {
+        if (change.type === 'position' && change.position) {
+          const nodeIndex = newNodes.findIndex((n) => n.id === change.id);
+          if (nodeIndex !== -1) {
+            newNodes[nodeIndex] = {
+              ...newNodes[nodeIndex],
+              position: change.position,
+            };
+          }
+        }
+      });
+      return newNodes;
+    });
+  }, [setNodes]);
 
   const handleAddClick = () => {
     setIsAddModalOpen(true);
