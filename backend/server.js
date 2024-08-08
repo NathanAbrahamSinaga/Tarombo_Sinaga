@@ -16,8 +16,6 @@ app.get('/', (req, res) => {
   res.send('Tarombo API is running');
 });
 
-
-
 app.use(cors({
   origin: 'https://tarombo-sinaga.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -40,7 +38,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/family-members', familyMemberRoutes);
 app.use('/api/family-news', familyNewsRoutes);
 app.use('/api/family-diagram', familyDiagramRoutes);
-app.use('/api/family-members/update-positions');
+app.use('/api/family-members/update-positions', familyMemberRoutes);
 
 
 const PORT = process.env.PORT || 3000;

@@ -70,14 +70,17 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
     data.onColorChange(data._id, newColor);
   };
 
+  const nodeWidth = data.photo ? width : 'auto'; // Adjust width if no image
+  const nodeHeight = data.photo ? height : 'auto'; // Adjust height if no image
+
   return (
     <div
       className={`rounded shadow relative ${
         data.isEmptyNode ? 'p-2' : 'p-4'
       }`}
       style={{
-        width: data.isEmptyNode ? isEmptyNodeWidth : data.isTextNode ? calculateTextNodeWidth(data.textContent) : width,
-        height: data.isEmptyNode ? isEmptyNodeHeight : data.isTextNode ? textNodeHeight : height,
+        width: data.isEmptyNode ? isEmptyNodeWidth : data.isTextNode ? calculateTextNodeWidth(data.textContent) : nodeWidth,
+        height: data.isEmptyNode ? isEmptyNodeHeight : data.isTextNode ? textNodeHeight : nodeHeight,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -119,11 +122,13 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
         </div>
       ) : (
         <>
-          <img
-            src={`data:image/webp;base64,${data.photo}`}
-            alt={data.name}
-            className="w-24 h-24 rounded-full object-cover mx-auto mb-2"
-          />
+          {data.photo && (
+            <img
+              src={`data:image/webp;base64,${data.photo}`}
+              alt={data.name}
+              className="w-24 h-24 rounded-full object-cover mx-auto mb-2"
+            />
+          )}
           <h3 className="text-md font-semibold text-center">{data.name}</h3>
           {data.birthDate && (
             <p className="text-sm text-center text-gray-600">
@@ -158,6 +163,7 @@ const FamilyMemberNode = ({ data, width = '190px', height = '290px', textNodeHei
     </div>
   );
 };
+
 
 const CustomEdge = ({
   id,
