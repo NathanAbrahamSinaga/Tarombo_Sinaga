@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(cors({
-  origin: 'https://sisilah-keluarga.vercel.app',
+  origin: 'https://tarombosinaga.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
